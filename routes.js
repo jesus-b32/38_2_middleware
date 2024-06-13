@@ -8,10 +8,10 @@ const router = new express.Router();
  * Here is what a response looks like:
 **[{“name”: “popsicle”, “price”: 1.45}, {“name”:”cheerios”, “price”: 3.40}]**
 */
-router.get('/', (req, res, next) => {
+router.get('', (req, res, next) => {
     try {
         // let allItems = items;
-        return res.json({item: items})
+        return res.json(items)
     } catch(err) {
         return next(err)
     }
@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
  * Here is what a response looks like:
 **{“name”:”popsicle”, “price”: 1.45} => {“added”: {“name”: “popsicle”, “price”: 1.45}}**
 */
-router.post('/', (req, res, next) => {
+router.post('', (req, res, next) => {
     try {
         const newItem = {name: req.body.name, price: req.body.price};
         items.push(newItem);
@@ -55,7 +55,7 @@ router.patch('/:name', (req, res, next) => {
     try {
         const foundItem = items.find(item => item.name === req.params.name)
         if (foundItem === undefined) {
-            throw new ExpressError('Item no found.', 404);
+            throw new ExpressError('Item not found.', 404);
         }
         foundItem.name = req.body.name;
         foundItem.price = req.body.price;
@@ -71,8 +71,12 @@ router.patch('/:name', (req, res, next) => {
 */
 router.delete('/:name', (req, res, next) => {
     try {
-        const removeItem = items.filter(item => item.name !== req.params.name);
-        items = 
+        const removeIdx = items.findIndex(item => item.name === req.params.name);
+        if (removeIdx === -1) {
+            throw new ExpressError('Item no found.', 404);
+        }
+        items.splice(removeIdx, 1);
+        return res.json({message: 'Deleted'});
     } catch(err) {
         return next(err)
     }    

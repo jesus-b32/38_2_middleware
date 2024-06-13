@@ -1,10 +1,10 @@
+const express = require("express")
+const app = express();
+const itemsRoutes = require("./routes")
 const ExpressError = require('./expressError');
 
-
-
-
-
-
+app.use(express.json());
+app.use('/items', itemsRoutes);
 
 
 // 404 handler
@@ -13,7 +13,7 @@ app.use(function (req, res, next) {
     return next(notFoundError)
 });
 
-  // generic error handler
+// generic error handler
 app.use(function(err, req, res, next) {
     // the default status is 500 Internal Server Error
     let status = err.status || 500;
